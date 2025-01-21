@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.CommandLine;
 using System.CommandLine.Invocation;
 using System.IO;
@@ -7,7 +7,7 @@ var rootCommand = new RootCommand("CLI Tool for bundling code files");
 var bundle = new Command("bundle", "Bundles multiple code files into one file");
 var languageOption = new Option<string>("--language", "Specify the programming languages to include (e.g., cs, js). Use 'all' to include all languages.")
 {
-    IsRequired = true
+    IsRequired = true 
 };
 bundle.AddOption(languageOption);
 languageOption.AddAlias("--l");
@@ -63,7 +63,6 @@ createRsp.SetHandler(() =>
             res += Console.ReadLine().Trim().ToLower() == "y" ? "--r true " : "--r false ";
             Console.Write("Author: ");
             res += $"--a {Console.ReadLine()} ";
-            Console.WriteLine(res);
             rspWriter.WriteLine(res);
         }
         Console.WriteLine("Response file created successfully: " + responseFile.FullName);
@@ -76,16 +75,6 @@ createRsp.SetHandler(() =>
 #endregion
 bundle.SetHandler((string language, FileInfo output, bool note, string sort, bool removeEmptyLines, string author) =>
 {
-    List<string> programmingLanguages = new List<string>
-    {
-        "CSharp",
-        "Java",
-        "Python",
-        "JavaScript",
-        "Ruby",
-        "CPlusPlus",
-        "all"
-    };
     List<string> extensionList = new List<string>();
     try
     {
@@ -103,26 +92,23 @@ bundle.SetHandler((string language, FileInfo output, bool note, string sort, boo
         else
         {
             List<string> selectedLanguage = language.Split(',').ToList();
-            for (int i = 0; i < selectedLanguage.Count(); i++)
-            {
-                Console.WriteLine(selectedLanguage[i]);
-            }
+
             List<string> temp = new List<string>();
             for (int i = 0; i < selectedLanguage.Count(); i++)
             {
                 temp = GetFileExtension(selectedLanguage[i]);
-                if (temp != null && temp.Count > 0) // **שינוי: בדיקה אם temp לא ריק**
+                if (temp != null && temp.Count > 0) 
                 {
-                    extensionList.AddRange(temp); // **שינוי: הוספת כל הסיומות לרשימה**
+                    extensionList.AddRange(temp); 
                 }
                 else
                 {
-                    Console.WriteLine($"The {selectedLanguage[i]} language is invalid"); // **שינוי: תיקון ההודעה**
+                    Console.WriteLine($"The {selectedLanguage[i]} language is invalid");
                 }
             }
             if (extensionList.Count() != 0)
             {
-                BundleFiles(output, note, sort, removeEmptyLines, author, extensionList); // קריאה לפונקציה המאוחדת עם סיומת
+                BundleFiles(output, note, sort, removeEmptyLines, author, extensionList); 
             }
         }
     }
@@ -132,7 +118,7 @@ bundle.SetHandler((string language, FileInfo output, bool note, string sort, boo
     }
 }, languageOption, outputOption, noteOption, sortOption, removeEmptyLinesOption, authorOption);
 #region functions
-static List<string> GetFileExtension(string language) // **שינוי: שיניתי את החזרת הסוג ל-List<string>**
+static List<string> GetFileExtension(string language) 
 {
     return language switch
     {
@@ -141,8 +127,8 @@ static List<string> GetFileExtension(string language) // **שינוי: שיני�
         "Python" => new List<string> { "py" },
         "JavaScript" => new List<string> { "js" },
         "CPlusPlus" => new List<string> { "cpp", "h" },
-        "TypeScript" => new List<string> { "ts" }, // הוספת TypeScript
-        _ => new List<string>(), // החזרת רשימה ריקה אם השפה לא מוכרת
+        "TypeScript" => new List<string> { "ts" }, 
+        _ => new List<string>(), 
     };
 
 }
@@ -164,14 +150,11 @@ static void BundleFiles(FileInfo output, bool note, string sort, bool removeEmpt
     };
     try
     {
-        Console.WriteLine(output);
         string path = output?.FullName;
         if (string.IsNullOrEmpty(path))
         {
             path = Path.Combine(Directory.GetCurrentDirectory(), "bundleFile.txt");
         }
-        Console.WriteLine("path");
-        Console.WriteLine(path);
         var directoryToSearch = output?.DirectoryName ?? Directory.GetCurrentDirectory();
         List<string> filesToBundle = new List<string>();
 
@@ -197,8 +180,8 @@ static void BundleFiles(FileInfo output, bool note, string sort, bool removeEmpt
             {
                 try
                 {
-                    Console.WriteLine($"Reading file: {file}");
                     if (author != null)
+
                     {
                         writer.WriteLine("//" + author + "\n");
                     }
@@ -248,7 +231,7 @@ static string RemoveEmptyLines(string filePath)
     catch (Exception ex)
     {
         Console.WriteLine($"Error removing empty lines from {filePath}: {ex.Message}");
-        return filePath; // החזר את נתיב הקובץ גם במקרה של שגיאה
+        return filePath; 
     }
 }
 #endregion
